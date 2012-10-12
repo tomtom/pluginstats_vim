@@ -1,0 +1,20 @@
+Downloading & installing plugins is easy. Not all of them turn out to be 
+of actual use and you forget about them. This plugins helps you identify 
+plugins you have installed but do not actually use that often to justify 
+cluttering your 'runtimepath' and thus slowing down startup time. Simply 
+make sure this plugin is loaded on startup. After a few days, use the 
+|:Pluginstats| command to check which script files were loaded how 
+often.
+
+Features:
+    - The |:Pluginstats| command displays script use in CSV format.
+    - If |g:pluginstats_autoexport| is greater than zero, the statistics 
+      are exported automatically every N days.
+
+
+-----------------------------------------------------------------------
+
+Status:  Experimental
+Install: See http://github.com/tomtom/vimtlib/blob/master/INSTALL.TXT
+See http://github.com/tomtom for related plugins.
+
