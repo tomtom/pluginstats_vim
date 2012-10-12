@@ -35,6 +35,7 @@ Contents~
         g:pluginstats_sort_by_count ... |g:pluginstats_sort_by_count|
         g:pluginstats_autoexport ...... |g:pluginstats_autoexport|
         g:pluginstats_sep ............. |g:pluginstats_sep|
+        g:pluginstats_normalize ....... |g:pluginstats_normalize|
         :Pluginstats .................. |:Pluginstats|
         :PluginstatsReset ............. |:PluginstatsReset|
 
@@ -47,7 +48,7 @@ g:pluginstats_file             (default: split(&rtp, ',')[0] .'/pluginstats.data
     The filename of the data file.
 
                                                     *g:pluginstats_ignore_rx*
-g:pluginstats_ignore_rx        (default: '\([\/]vim[\/]vim\d\+[\/]\|[\/]after[\/]\|[\/][._]\?g\?vimrc$\)')
+g:pluginstats_ignore_rx        (default: '\(^/usr/share/\|[\/]vim[\/]vim\d\+[\/]\|[\/]after[\/]\|[\/][._]\?g\?vimrc$\)')
     Ignore filenames matching this |regexp|.
 
                                                     *g:pluginstats_sort_by_count*
@@ -60,6 +61,11 @@ g:pluginstats_autoexport       (default: 0)
 
                                                     *g:pluginstats_sep*
 g:pluginstats_sep              (default: ";")
+
+                                                    *g:pluginstats_normalize*
+g:pluginstats_normalize        (default: 0)
+    If true, normalize (i.e. use the full filename after |simplyfy()| 
+    and |resolve()|) filenames.
 
                                                     *:Pluginstats*
 :Pluginstats

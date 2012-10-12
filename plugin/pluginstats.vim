@@ -1,7 +1,7 @@
 " @Author:      Tom Link (micathom AT gmail com?subject=[vim])
 " @GIT:         http://github.com/tomtom/vimtlib/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    102
+" @Revision:    107
 " GetLatestVimScripts: 0 0 :AutoInstall: pluginstats.vim
 " Provide statistics how often a source file was loaded
 
@@ -22,7 +22,7 @@ endif
 
 if !exists('g:pluginstats_ignore_rx')
     " Ignore filenames matching this |regexp|.
-    let g:pluginstats_ignore_rx = '\([\/]vim[\/]vim\d\+[\/]\|[\/]after[\/]\|[\/][._]\?g\?vimrc$\)'   "{{{2
+    let g:pluginstats_ignore_rx = '\(^/usr/share/\|[\/]vim[\/]vim\d\+[\/]\|[\/]after[\/]\|[\/][._]\?g\?vimrc$\)'   "{{{2
 endif
 
 
@@ -40,6 +40,13 @@ endif
 
 if !exists('g:pluginstats_sep')
     let g:pluginstats_sep = ";"   "{{{2
+endif
+
+
+if !exists('g:pluginstats_normalize')
+    " If true, normalize (i.e. use the full filename after |simplyfy()| 
+    " and |resolve()|) filenames.
+    let g:pluginstats_normalize = 0   "{{{2
 endif
 
 
@@ -74,7 +81,7 @@ function! s:FormatReport() "{{{3
         let all_files = split(globpath(&rtp, "plugin/*.vim"), '\n')
         " let all_files += split(globpath(&rtp, "autoload/**/*.vim"), '\n')
         for file in all_files
-            let file = fnamemodify(simplify(resolve(file)), ':p')
+            let file = s:Filename(file)
             if file !~ g:pluginstats_ignore_rx && !has_key(data, file)
                 let data[file] = 0
             endif
@@ -162,12 +169,21 @@ function! s:RegisterScriptnames() "{{{3
     let scripts = map(scripts, 'matchstr(v:val, ''^\s*\d\+:\s\+\zs.*$'')')
     let s:data['*RUNS*'] += 1
     for file in scripts
-        let file = fnamemodify(simplify(resolve(file)), ':p')
+        let file = s:Filename(file)
         if file !~ g:pluginstats_ignore_rx
             " TLogVAR file
             let s:data[file] = get(s:data, file, 0) + 1
         endif
     endfor
+endf
+
+
+function! s:Filename(file) "{{{3
+    if g:pluginstats_normalize
+        return fnamemodify(simplify(resolve(a:file)), ':p')
+    else
+        return a:file
+    endif
 endf
 
 
