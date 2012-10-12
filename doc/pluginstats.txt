@@ -1,0 +1,74 @@
+*pluginstats.txt*   Provide statistics how often a source file was loaded
+                    Author: Tom Link, micathom at gmail com
+
+Downloading & installing plugins is easy. Not all of them turn out to be 
+of actual use and you forget about them. This plugins helps you identify 
+plugins you have installed but do not actually use that often to justify 
+cluttering your 'runtimepath' and thus slowing down startup time. Simply 
+make sure this plugin is loaded on startup. After a few days, use the 
+|:Pluginstats| command to check which script files were loaded how 
+often.
+
+Features:
+    - The |:Pluginstats| command displays script use in CSV format.
+    - If |g:pluginstats_autoexport| is greater than zero, the statistics 
+      are exported automatically every N days.
+
+
+-----------------------------------------------------------------------
+Install~
+
+In order to install the vba, open the vba file in VIM and type: >
+
+    :so %
+
+See :help vimball for details.
+
+Also available via git: http://github.com/tomtom/pluginstats_vim/
+
+
+========================================================================
+Contents~
+
+        g:pluginstats_file ............ |g:pluginstats_file|
+        g:pluginstats_ignore_rx ....... |g:pluginstats_ignore_rx|
+        g:pluginstats_sort_by_count ... |g:pluginstats_sort_by_count|
+        g:pluginstats_autoexport ...... |g:pluginstats_autoexport|
+        g:pluginstats_sep ............. |g:pluginstats_sep|
+        :Pluginstats .................. |:Pluginstats|
+        :PluginstatsReset ............. |:PluginstatsReset|
+
+
+========================================================================
+plugin/pluginstats.vim~
+
+                                                    *g:pluginstats_file*
+g:pluginstats_file             (default: split(&rtp, ',')[0] .'/pluginstats.data')
+    The filename of the data file.
+
+                                                    *g:pluginstats_ignore_rx*
+g:pluginstats_ignore_rx        (default: '\([\/]vim[\/]vim\d\+[\/]\|[\/]after[\/]\|[\/][._]\?g\?vimrc$\)')
+    Ignore filenames matching this |regexp|.
+
+                                                    *g:pluginstats_sort_by_count*
+g:pluginstats_sort_by_count    (default: 1)
+    If true, sort the report by count.
+
+                                                    *g:pluginstats_autoexport*
+g:pluginstats_autoexport       (default: 0)
+    If > 0, automatically export the report as CSV file every N days.
+
+                                                    *g:pluginstats_sep*
+g:pluginstats_sep              (default: ";")
+
+                                                    *:Pluginstats*
+:Pluginstats
+    Create a report.
+
+                                                    *:PluginstatsReset*
+:PluginstatsReset
+    Reset all stats.
+
+
+
+vim:tw=78:fo=tcq2:isk=!-~,^*,^|,^":ts=8:ft=help:norl:
