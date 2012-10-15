@@ -1,7 +1,7 @@
 " @Author:      Tom Link (micathom AT gmail com?subject=[vim])
 " @GIT:         http://github.com/tomtom/vimtlib/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    107
+" @Revision:    114
 " GetLatestVimScripts: 0 0 :AutoInstall: pluginstats.vim
 " Provide statistics how often a source file was loaded
 
@@ -75,20 +75,18 @@ endf
 
 
 function! s:FormatReport() "{{{3
-    let n = s:data["*RUNS*"]
+    let n = s:data["runs"]
     if n > 0
-        let data = copy(s:data)
+        let filesdata = copy(s:data.files)
         let all_files = split(globpath(&rtp, "plugin/*.vim"), '\n')
         " let all_files += split(globpath(&rtp, "autoload/**/*.vim"), '\n')
         for file in all_files
             let file = s:Filename(file)
-            if file !~ g:pluginstats_ignore_rx && !has_key(data, file)
-                let data[file] = 0
+            if file !~ g:pluginstats_ignore_rx && !has_key(filesdata, file)
+                let filesdata[file] = 0
             endif
         endfor
-        call remove(data, '*RUNS*')
-        call remove(data, '*LAST-EXPORT*')
-        let files = items(data)
+        let files = items(filesdata)
         if g:pluginstats_sort_by_count
             let files = sort(files, 's:FileSorter')
         else
@@ -126,8 +124,15 @@ function! s:ReadData() "{{{3
         if filereadable(g:pluginstats_file)
             let datalines = readfile(g:pluginstats_file)
             let s:data = eval(join(datalines, "\n"))
+            if !has_key(s:data, 'version')
+                echohl WarningMsg
+                echom "Pluginstats: Outdated data file format ... Reset!"
+                echohl NONE
+                call s:Reset()
+                call s:ReadData()
+            endif
         else
-            let s:data = {'*RUNS*': 0, '*LAST-EXPORT*': 0}
+            let s:data = {'runs': 0, 'last-export': 0, 'version': 1, 'files': {}}
         endif
     endif
 endf
@@ -139,8 +144,8 @@ function! s:RegisterSession() "{{{3
     call s:RegisterScriptnames()
     if g:pluginstats_autoexport > 0
         let days = localtime() / (60 * 60 * 24)
-        if days != s:data['*LAST-EXPORT*'] && days % g:pluginstats_autoexport == 0
-            let s:data['*LAST-EXPORT*'] = days
+        if days != s:data['last-export'] && days % g:pluginstats_autoexport == 0
+            let s:data['last-export'] = days
             let lines = s:FormatReport()
             if !empty(lines)
                 let report = s:ReportFile()
@@ -167,12 +172,12 @@ function! s:RegisterScriptnames() "{{{3
     redir END
     let scripts = split(scriptss, '\n')
     let scripts = map(scripts, 'matchstr(v:val, ''^\s*\d\+:\s\+\zs.*$'')')
-    let s:data['*RUNS*'] += 1
+    let s:data['runs'] += 1
     for file in scripts
         let file = s:Filename(file)
         if file !~ g:pluginstats_ignore_rx
             " TLogVAR file
-            let s:data[file] = get(s:data, file, 0) + 1
+            let s:data.files[file] = get(s:data.files, file, 0) + 1
         endif
     endfor
 endf
